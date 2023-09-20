@@ -16,7 +16,7 @@
 <script>
 export default {
   name: 'App',
-
+  
   // 3. Reactivity Fundamentals - Using data function to return a reactive data object
   data() {
     return {

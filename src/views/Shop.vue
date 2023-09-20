@@ -24,6 +24,59 @@
     <div :class="messageClass">
       {{ message }}
     </div>
+
+    <div v-html="rawHTML"></div>
+
+    <!-- 1c. Attribute Bindings -->
+    <!-- <button :id="dynamicId">Dynamic ID</button> -->
+    <button :id="dynamicId" @click="changeButtonText" class="large-button">{{ buttonText }}</button>
+    <br>
+     <!-- 6b. v-for with a range -->
+     <div>
+      <div v-for="n in 10" :key="n">
+        {{ n }}
+      </div>
+    </div>
+    <br>
+    <!-- 6c. v-for on a template -->
+    <div>
+      <template v-for="n in 5" :key="n">
+        <div>{{ n }}</div>
+        <div>{{ n * n }}</div>
+      </template>
+    </div>
+    <br>
+     <!-- 6d. v-for with v-if -->
+     <div>
+      <div v-for="n in 10" :key="n" v-if="n % 2 === 0">
+        {{ n }}
+      </div>
+    </div>
+    <div>
+      <form>
+      <label for="name">Name: </label>
+      <input type="text" id="name" v-model.trim="name" />
+      
+    </form>
+
+    </div>
+
+    <div>
+<!-- 6e. v-for with a component -->
+    <CustomComponent v-for="n in 3" :key="n" :number="n" />
+    <br>
+    <!-- 10c. Slots -->
+    <CustomComponentWithSlot>
+      <template #default>
+        <div>Default slot content</div>
+      </template>
+      <template #namedSlot>
+        <div>Named slot content</div>
+      </template>
+    </CustomComponentWithSlot>
+
+    </div>
+
   </div>
 </template>
 
@@ -31,6 +84,7 @@
 <script setup>
 // 3. Reactivity Fundamentals - Importing ref from Vue to create reactive variables
 import { ref } from 'vue';
+import { watch } from 'vue';
 // 10a. Components Props - Importing defineProps to define the props that the component accepts
 import { defineProps, defineEmits } from 'vue';
 
@@ -38,6 +92,10 @@ import { defineProps, defineEmits } from 'vue';
 import IcecreamItem from '../components/IcecreamItem.vue';
 import ShoppingCart from '../components/ShoppingCart.vue';
 import StarsRating from '../components/StarsRating.vue';
+
+// 10c. Importing components to demonstrate v-for with a component and slots
+import CustomComponent from '../components/CustomComponent.vue';
+import CustomComponentWithSlot from '../components/CustomComponentWithSlot.vue';
 
 // 3. Reactivity Fundamentals - Using ref to create reactive variables
 const icecreams = ref([
@@ -87,11 +145,26 @@ const orderIcecream = (item) => {
   }
 };
 
+const rawHTML = ref('<span style="color: red;">Raw HTML</span>');
+let buttonCounter = 0;
+const dynamicId = ref(`button-${buttonCounter++}`);
+const buttonText = ref('Dynamic ID');
+
 const updateRating = (newRating) => {
   rating.value = newRating;
   message.value = `You set the rating to ${newRating}`;
   messageClass.value = 'success';
 };
+
+const changeButtonText = () => {
+  buttonText.value = 'Button Clicked';
+  dynamicId.value = `button-${buttonCounter++}`;
+};
+
+ // 9. Watchers
+ watch(cart, (newVal, oldVal) => {
+    console.log('Cart changed:', newVal);
+  });
 </script>
 
 <style>
@@ -103,4 +176,11 @@ const updateRating = (newRating) => {
 .error {
   color: red;
 }
+
+.large-button {
+  width: 200px; /* Adjust the width as needed */
+  height: 40px; /* Adjust the height as needed */
+  font-size: 16px; /* Adjust the font size as needed */
+}
+
 </style>
